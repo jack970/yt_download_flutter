@@ -4,6 +4,7 @@ import 'package:yt_download/components/customAppBar.dart';
 import 'package:yt_download/components/listview_videos.dart';
 import 'package:flutter/services.dart';
 import 'package:yt_download/components/showDialogOk.dart';
+import 'package:yt_download/controllers/download_controller.dart';
 import 'package:yt_download/controllers/request_from_server.dart';
 import 'package:yt_download/models/video_model.dart';
 import 'package:yt_download/providers/db_provider.dart';
@@ -28,6 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _videos = readJson();
     });
+    DownloadController.createFolderInApp('Downloads');
   }
 
   searchVideosFromApi(String searchString) {
@@ -69,8 +71,8 @@ class _MyHomePageState extends State<MyHomePage> {
           isSearching: isSearching,
           controller: _controller,
           onSubmitted: (String value) {
-            _comunnicationAPI.api.hasNetwork().then((value) {
-              if (!value) {
+            _comunnicationAPI.api.hasNetwork().then((hasNetwork) {
+              if (!hasNetwork) {
                 return showAlertDialogOk(
                     "Sem Internet!", "Tente novamente mais tarde.", context);
               }
@@ -84,10 +86,43 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
         SliverFillRemaining(
-            child: ListViewVideos(
-          videos: _videos,
-        ))
+          child: ListViewVideos(
+            videos: _videos,
+          ),
+        )
       ]),
+      drawer: menuDrawer(),
+    );
+  }
+
+  Drawer menuDrawer() {
+    return Drawer(
+      child: Center(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 70, left: 40, bottom: 30),
+              width: double.infinity,
+              color: Colors.red,
+              child: Text(
+                "MENU",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ListTile(
+              leading: Icon(Icons.download_rounded),
+              title: Text("Downloads"),
+              onTap: () => Navigator.popAndPushNamed(context, '/Downloads'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:yt_download/components/showDialogOk.dart';
-import 'package:yt_download/controllers/request_from_server.dart';
+import 'package:yt_download/components/dialogDownload.dart';
 import 'package:yt_download/models/video_model.dart';
 
 class ListViewVideos extends StatelessWidget {
-  ListViewVideos({Key? key, this.videos}) : super(key: key);
-  ComunnicationAPI _comunnicationAPI = ComunnicationAPI();
-  Future<List>? videos;
+  const ListViewVideos({Key? key, this.videos}) : super(key: key);
+  final Future<List>? videos;
 
   Widget videoMenu(videoId, videoTitle) {
     return PopupMenuButton(
@@ -16,16 +14,26 @@ class ListViewVideos extends StatelessWidget {
         PopupMenuItem(
           child: ListTile(
             minLeadingWidth: 0,
-            leading: Icon(Icons.download_rounded),
-            title: Text('Baixar'),
-            onTap: () {
-              _comunnicationAPI.api.hasNetwork().then((value) {
-                if (!value) {
-                  return showAlertDialogOk(
-                      "Sem Internet!", "Tente novamente mais tarde.", context);
-                }
-              });
-              _comunnicationAPI.downloadFile(videoId, videoTitle);
+            leading: const Icon(Icons.download_rounded),
+            title: const Text('Baixar'),
+            onTap: () async {
+              Navigator.pop(context);
+              return showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DialogDownload(
+                      videoTitulo: videoTitle,
+                      videoId: videoId,
+                    );
+                  });
+              // _comunnicationAPI.api.hasNetwork().then((value) {
+              //   if (!value) {
+              //     return showAlertDialogOk(
+              //         "Sem Internet!", "Tente novamente mais tarde.", context);
+              //   }
+              // });
+              // _comunnicationAPI.downloadFile(videoId, videoTitle);
             },
           ),
         ),
@@ -51,8 +59,8 @@ class ListViewVideos extends StatelessWidget {
                   child: frame != null
                       ? child
                       : const Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: const SizedBox(
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(
                             height: 60,
                             width: 60,
                             child: CircularProgressIndicator(strokeWidth: 6),
@@ -65,30 +73,30 @@ class ListViewVideos extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: Text(
-                      item.snippet.title.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      maxLines: 2,
-                    ),
-                  ),
-                  videoMenu(item.id.id, item.snippet.title)
-                ]),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              item.snippet.description.toString(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          item.snippet.title.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          maxLines: 2,
+                        ),
+                      ),
+                      videoMenu(item.id.id, item.snippet.title)
+                    ]),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  item.snippet.description.toString(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           )
         ],

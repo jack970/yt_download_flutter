@@ -20,35 +20,31 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       floating: true,
-      leadingWidth: 100.0,
-      title: Padding(
-        padding: const EdgeInsets.only(left: 12.0),
-        child: isSearching
-            ? TextField(
-                cursorColor: Colors.white,
-                controller: controller,
-                onSubmitted: onSubmitted,
-                decoration: const InputDecoration(
-                    hintStyle: TextStyle(fontSize: 20.0, color: Colors.white),
-                    hintText: "Pesquisar...",
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.white,
-                    )),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              )
-            : controller.text.isNotEmpty ? Text(controller.text) : Text(title),
-      ),
+      title: isSearching
+          ? TextField(
+              cursorColor: Colors.white,
+              controller: controller,
+              onSubmitted: onSubmitted,
+              decoration: const InputDecoration(
+                  hintStyle: TextStyle(fontSize: 20.0, color: Colors.white),
+                  hintText: "Pesquisar...",
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  )),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            )
+          : controller.text.isNotEmpty
+              ? Text(controller.text)
+              : Text(title),
       actions: [
         IconButton(
           onPressed: setIsSearching,
           icon: isSearching ? Icon(Icons.cancel) : Icon(Icons.search),
         ),
-        IconButton(
-            onPressed: () {}, iconSize: 40.0, icon: const Icon(Icons.menu))
       ],
     );
   }

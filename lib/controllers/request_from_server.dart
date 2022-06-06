@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:yt_download/models/video_model.dart';
 import 'package:yt_download/providers/api.dart';
@@ -20,11 +21,12 @@ class ComunnicationAPI {
     }).toList();
   }
 
-  Future<File> downloadFile(String id, String filename) async {
-    Uint8List response = await api.getVideo('download/$id');
+  Future<File> downloadFile(String id, String filename, String format) async {
+    Uint8List response = await api.getVideo('download?id=$id&format=$format');
 
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = File('$dir/$filename');
+    String _appDocDir = (await getApplicationDocumentsDirectory()).path;
+    String dirname = path.join(_appDocDir, 'Downloads', filename);
+    File file = File(dirname);
     await file.writeAsBytes(response);
     return file;
   }

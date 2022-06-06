@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yt_download/views/download_phone_screen.dart';
 import 'package:yt_download/views/home.dart';
 
 void main() {
@@ -8,7 +9,11 @@ void main() {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'Youtube Downloader',),
+        '/Downloads': (context) => DownloadPhoneScreen()
+      },
     ),
   );
 }
